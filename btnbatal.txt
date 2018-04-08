@@ -1,0 +1,17 @@
+ private void btnBatalActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        // TODO add your handling code here:
+        btnTambah.setText("Tambah");
+        txtNama.setText("");
+        txtAlamat.setText("");
+        txtPhone.setText("");
+
+       // Mengatur  Enable Tombol Dan Textfield
+        txtNama.setEnabled(false);
+        txtAlamat.setEnabled(false);
+        txtPhone.setEnabled(false);
+
+        btnTambah.setEnabled(true);
+        btnEdit.setEnabled(true);
+        btnHapus.setEnabled(true);
+        btnBatal.setEnabled(true);
+    } 

@@ -1,0 +1,43 @@
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+
+/**
+ *
+ * @author CIPRUT
+ */
+public class Login extends javax.swing.JFrame {
+    Connection conn;
+    Statement st;
+    ResultSet rs;
+    String sql;
+
+    /** Creates new form fLogin */
+    public Login() {
+        initComponents();
+        koneksi db= new global.koneksi();
+        db.config();
+        conn = db.connect;
+        st = db.stat;
+    }
+
+       
+    
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        // TODO add your handling code here:
+        try {
+            sql="SELECT * FROM user WHERE username='" + txtName.getText() + "' AND password='" + txtPass.getText() + "'";
+            rs = st.executeQuery(sql);
+            if(rs.next()){
+                if(txtName.getText().equals(rs.getString("username")) && txtPass.getText().equals(rs.getString("password"))){
+                    JOptionPane.showMessageDialog(null, "Berhasil Login");
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "Username/Password salah");
+            }
+        }catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }                             

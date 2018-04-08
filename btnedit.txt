@@ -1,0 +1,15 @@
+private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {                                        
+        // TODO add your handling code here:
+        cbJK.setEnabled(true); // txtNoAnggota Tidak Aktif
+        txtNama.setEnabled(true);       // txtNama          Aktif
+        txtAlamat.setEnabled(true);     // txtAlamat Aktif
+        txtPhone.setEnabled(true);     // txtAlamat Aktif
+        btnTambah.setText("Update"); // Merubah Teks Tombol Simpan
+        
+        btnTambah.setEnabled(true);
+        btnEdit.setEnabled(true);
+        btnBatal.setEnabled(true);
+        btnHapus.setEnabled(false);
+        // Memanggil Method  ambilData_dari_JTable()
+        ambilData_dari_JTable();
+    }  

@@ -1,0 +1,218 @@
+private void getData(){
+  try{
+    String sql="Select * from customer";
+    PreparedStatement st=conn.prepareStatement(sql);
+    ResultSet rs=st.executeQuery();   // import java.sql.ResultSet;
+
+    // Menampilkan ke JTable  melalui tabModel
+    String idcust,nama,alamat,phone,jk;
+    int no=0;
+    while(rs.next()){
+        no=no+1;
+        idcust=rs.getString("id_cust");
+        nama=rs.getString("nama");
+        alamat=rs.getString("alamat");
+        phone=rs.getString("phone");
+        jk=rs.getString("jk");
+        
+        Object Data[]={no,idcust,nama,alamat,phone,jk};
+        tabModel.addRow(Data);
+    }
+    // Tutup Koneksi
+//    st.close();
+//    conn.close();
+  
+  }catch (SQLException sqle) {
+      System.out.println("Proses Query Gagal = " + sqle);
+      System.exit(0);
+  }catch(Exception e){
+      System.out.println("Koneksi Access Gagal " +e.getMessage());
+      System.exit(0);
+  }
+}
+
+private void setJTable(){
+    String [] JudulKolom={"No","ID Customer","Nama","Alamat","Phone","Jenis Kelamin"};
+    tabModel = new DefaultTableModel(null, JudulKolom){
+        boolean[] canEdit = new boolean [] { false, false, false, false};
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return canEdit [columnIndex];
+        }
+    };
+    TCustomer.setModel(tabModel);
+    TCustomer.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    TCustomer.getColumnModel().getColumn(0).setPreferredWidth(30);
+    TCustomer.getColumnModel().getColumn(1).setPreferredWidth(100);
+    TCustomer.getColumnModel().getColumn(2).setPreferredWidth(150);
+    TCustomer.getColumnModel().getColumn(3).setPreferredWidth(100);
+    TCustomer.getColumnModel().getColumn(4).setPreferredWidth(100);
+    TCustomer.getColumnModel().getColumn(5).setPreferredWidth(100);
+
+    getData();
+}
+
+void ambilData_dari_JTable() {
+    int row = TCustomer.getSelectedRow();
+
+    // Mengambil data yang dipilih pada JTable
+    String IdCust = tabModel.getValueAt(row, 1).toString();
+    String Nama = tabModel.getValueAt(row, 2).toString();
+    String Alamat = tabModel.getValueAt(row, 3).toString();
+    String Phone = tabModel.getValueAt(row, 4).toString();
+    String JK = tabModel.getValueAt(row, 5).toString();
+    
+    txtCust.setText(IdCust);
+    txtNama.setText(Nama);
+    txtAlamat.setText(Alamat);
+    txtPhone.setText(Phone);
+    //txtJK.setText(Nama);
+  }
+
+// Method Untuk Menghapus Semua Isi JTable
+public void hapusIsiJTable() {
+    int row = tabModel.getRowCount();
+    for (int i = 0; i < row; i++) {
+      tabModel.removeRow(0);
+    }
+}
+
+public void tampilDataKeJTable() {
+    hapusIsiJTable();
+    try {
+//        conn.close();
+        String sql="Select * from customer";
+        PreparedStatement st=conn.prepareStatement(sql);
+        ResultSet rs=st.executeQuery();
+        String idcust,nama,alamat,phone,jk;
+        int no=0;
+        while(rs.next()){
+            no=no+1;
+            idcust=rs.getString("id_cust");
+            nama=rs.getString("nama");
+            alamat=rs.getString("alamat");
+            phone=rs.getString("phone");
+            jk=rs.getString("jk");
+            
+            Object Data[]={no,idcust,nama,alamat,phone,jk};
+            tabModel.addRow(Data);
+        }
+    }
+    catch (Exception e) {}
+}
+
+public void rubahData() {
+    // Konfirmasi sebelum melakukan perubahan data
+    int ok = JOptionPane.showConfirmDialog(this,
+        "Anda Yakin Ingin Mengubah Data\n Dengan ID Customer = '" + txtCust.getText() +
+        "'", "Konfirmasi ",JOptionPane.YES_NO_OPTION);
+    // Apabila tombol Yes ditekan
+    if (ok == 0) {
+      try {
+        String sql ="UPDATE customer SET nama = ?, alamat= ?, phone= ?, jk= ? WHERE id_cust = ?";
+        PreparedStatement st = conn.prepareStatement(sql);
+        try {
+          st.setString(1, txtCust.getText());
+          st.setString(2, txtNama.getText());
+          st.setString(3, txtAlamat.getText());
+          st.setString(4, txtPhone.getText());
+          st.setObject(5, cbJK.getSelectedItem());
+          st.executeUpdate();
+
+         // Memanggil Method   tampilDataKeJTable();
+          tampilDataKeJTable();
+
+          txtCust.setText("");
+          txtNama.setText("");
+          txtAlamat.setText("");
+          txtPhone.setText("");
+        } catch (SQLException se) { }
+      }
+        catch (SQLException se) {}
+    }
+  }
+
+public void simpanData(){
+    try{
+        if(txtNama.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this,"Nama belum dimasukkan!");
+        }else if(txtPhone.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this,"Telepon belum dimasukkan!");
+        }else if(txtAlamat.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this,"Alamat belum dimasukkan!");
+        }else{
+            String sql="INSERT INTO customer values(?,?,?,?,?)";
+            PreparedStatement st=conn.prepareStatement(sql);
+                st.setString(1, txtCust.getText());
+                st.setString(2, txtNama.getText());
+                st.setString(3, txtAlamat.getText());
+                st.setString(4, txtPhone.getText());
+                st.setObject(5, cbJK.getSelectedItem());
+            int rs=st.executeUpdate();
+            if(rs>0){
+                JOptionPane.showMessageDialog(this,"Input Berhasil");
+                tampilDataKeJTable();
+            }else{
+                JOptionPane.showMessageDialog(this,"Input Gagal");
+            }
+        }
+            //st.close();
+            //conn.close();
+    }catch(Exception e){
+        System.out.println("Exception gagal " +e );
+    }
+}
+
+public void hapus_Data() {
+    // Konfirmasi sebelum melakukan penghapusan data
+    ambilData_dari_JTable();
+    int ok = JOptionPane.showConfirmDialog(this,
+        "Anda Yakin Ingin Menghapus Data\nDengan No Anggota = '" + txtCust.getText() +
+        "'", "Konfirmasi Menghapus Data",JOptionPane.YES_NO_OPTION);
+    if (ok == 0) {     // Apabila tombol OK ditekan
+      try {
+        String sql = "DELETE FROM customer WHERE id_cust = ?";
+        PreparedStatement st = conn.prepareStatement(sql);
+        st.setString(1, txtCust.getText());
+        int rs=st.executeUpdate();
+        if(rs>0){
+        tampilDataKeJTable();
+        JOptionPane.showMessageDialog(this,"Data Sudah dihapus");
+        }
+        txtCust.setText("");
+        txtNama.setText("");
+        txtAlamat.setText("");
+        txtPhone.setText("");
+      } catch (Exception se) {  // Silahkan tambahkan catch Exception yang lain
+         JOptionPane.showMessageDialog(this,"Gagal Hapus Data.. ");
+       }
+    }
+  }
+
+private void idcust(){
+    try {
+       String sql="SELECT * FROM customer ORDER BY id_cust desc";
+       PreparedStatement st=conn.prepareStatement(sql);
+       ResultSet rs= st.executeQuery();
+       if(rs.next()){
+           String notik = rs.getString("id_cust").substring(3);
+           String AN = "" + (Integer.parseInt(notik) + 1);
+           String Nol = "";
+
+           if(AN.length()==1){
+               Nol = "00";
+           }else if(AN.length()==2){
+               Nol = "0";
+           }else if(AN.length()==3){
+               Nol = "";
+           }
+           txtCust.setText("CST" + Nol + AN);
+       }else{
+           txtCust.setText("CST001");
+       }
+    }catch(Exception e){
+        JOptionPane.showMessageDialog(null, e);
+    }
+}
+
+}

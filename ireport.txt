@@ -1,0 +1,24 @@
+private void BCetakActionPerformed(java.awt.event.ActionEvent evt) {                                       
+// TODO add your handling code here
+    
+    JasperReport jasRep;
+    JasperPrint jasPri;
+    Map<String, Object> no_tiket = new HashMap<String, Object>();
+    JasperDesign jasDes;
+    
+    try{
+        Class.forName("com.mysql.jdbc.Driver");
+        conn=DriverManager.getConnection("jdbc:odbc:Service");
+            
+        File report = new File("src/programservices/Report.jrxml");
+        jasDes = JRXmlLoader.load(report);
+        no_tiket.clear();
+        HashMap hashMap = new HashMap();
+        hashMap.put("ID_Transaksi", TxtIDServiceCuy.getText());
+        jasRep = JasperCompileManager.compileReport(jasDes);
+        jasPri = JasperFillManager.fillReport(jasRep, hashMap, conn);
+        JasperViewer.viewReport(jasPri, false);
+    }catch (Exception e) {
+    JOptionPane.showMessageDialog(this,"gagal bro");
+    } 
+    

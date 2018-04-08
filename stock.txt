@@ -1,0 +1,47 @@
+public void penguranganstok(){
+    try{
+        Class.forName("com.mysql.jdbc.Driver");
+          conn=DriverManager.getConnection("jdbc:odbc:Service");
+              
+        //ini ngambil stocknya, terus dikurangin sama banyaknya pembelian
+        int dikurang = 0;
+        String sto="select*from Stok where Nama_Barang='" + TxtNamaBarang.getText() + "'";
+        PreparedStatement sr = (PreparedStatement) conn.prepareStatement(sto);
+        ResultSet rz =sr.executeQuery();
+        while (rz.next()) {
+            int stock = Integer.valueOf(rz.getString("Jumlah"));
+            int jumlah = Integer.valueOf(TxtJumlah.getText()); 
+            dikurang = stock - jumlah;
+        }
+        rz.close();
+        conn.close();
+        Class.forName("com.mysql.jdbc.Driver");
+          conn=DriverManager.getConnection("jdbc:odbc:Service");
+          
+        //stock barang diupdate
+        String di_kurang = Integer.toString(dikurang);
+        if(dikurang<0){
+        JOptionPane.showMessageDialog(this,"stock kurang");
+        }else{
+            String ba="update Stok set Jumlah=? where Nama_Barang='" + TxtNamaBarang.getText() + "'";
+        PreparedStatement be = (PreparedStatement) conn.prepareStatement(ba);
+        try {
+            be.setString(1, di_kurang);
+            be.executeUpdate();
+        } catch (SQLException se) { }
+        
+        be.close();
+        conn.close();
+        }
+    
+        //masukin ke table transaksi
+        }catch (ClassNotFoundException cnfe) {
+           System.out.println("Class Driver tidak ditemukan.. : " + cnfe);
+        }
+        catch (SQLException sqle) {
+           System.out.println("Input  Gagal = " + sqle.getMessage());
+        }
+        catch(Exception e){
+           System.out.println("Gagal Tuh.. Bego Lu " +e.getMessage());
+        }
+    }

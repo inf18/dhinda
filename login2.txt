@@ -1,0 +1,41 @@
+private void BLoginActionPerformed(java.awt.event.ActionEvent evt) {                                       
+// TODO add your handling code here:
+    
+      String sql;
+        String username=txtUsername.getText();
+        String password=txtPassword.getText();
+        try {      
+        Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+        Connection conn=DriverManager.getConnection("jdbc:odbc:Service");
+        sql ="Select * from User WHERE Username ='" +txtUsername.getText() + "'";
+        PreparedStatement st = conn.prepareStatement(sql);
+        ResultSet rs =st.executeQuery();      
+        if (rs.next()) {
+             String pass = rs.getString("Password");
+             String bagian = rs.getString("Bagian");
+             if (password.equals(pass)){
+                 JOptionPane.showMessageDialog(this, "Login Berhasil");
+                 if(bagian.equals("Admin")){
+                     
+                    MenuUtama show = new MenuUtama ();
+                                   show.setVisible(true);  
+                      
+     
+                       dispose();
+                 
+                   
+
+                 }
+                 else
+                 {
+                   
+                 }
+             }
+             else
+                  JOptionPane.showMessageDialog(this, "Ada Kesalahan pada Username/Password");
+        } else
+          JOptionPane.showMessageDialog(this, "Ada Kesalahan pada Username/Password");
+      }
+      catch (Exception e) {JOptionPane.showMessageDialog(this,e.getMessage());
+      }
+}                          

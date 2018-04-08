@@ -1,0 +1,19 @@
+public class koneksi {
+    Connection connect;
+    Statement stat;
+    String host="localhost"; //192.168.0.100:3306
+    String db="db_dhindatransportasi"; //db_dhinda
+    String user="root"; //smk
+    String pass=""; //bivos
+    
+    public void config() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connect=DriverManager.getConnection("jdbc:mysql://"+host+"/"+db+"?user="+user+"&password="+pass);
+            stat = connect.createStatement();
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Koneksi Gagal" + e.getMessage());
+        }
+    }
+    
+}

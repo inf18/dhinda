@@ -1,0 +1,13 @@
+private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {                                     
+// TODO add your handling code here:
+             Mekanik show = null;
+        try {
+            show = new Mekanik ();
+        } catch (SQLException ex) {
+            Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(MenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+        }
+                                   show.setVisible(true);
+        
+}    
